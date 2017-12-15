@@ -52,9 +52,13 @@ conn.onmessage = function(e) {
                 $("#login_state").text("【オフライン】");
             }
         }
+    } else if(receive_data["type"] == 'error') {
+        append_message = "<div class='receive_error' style='color:#992222;'>相手がオフラインのため送信に失敗しました</div>"
+        $("#message_box").append(append_message);
+    
     } else {
         //チャット欄にメッセージ追加
-        append_message = "<div class='receive_message'> <?php echo $target ?>:" + receive_data["message"] + "<div>"
+        append_message = "<div class='receive_message'> "+receive_data["name"] +":" + receive_data["message"] + "<div>"
         $("#message_box").append(append_message);
     }
 };
@@ -63,11 +67,10 @@ conn.onmessage = function(e) {
 //メッセージを送る
 function send() {
   var param = {}
-  param["name"] = $('#name').val();
+  param["name"] = '<?php echo($myself) ?>';
   param["message"] = $('#message').val();
   conn.send(JSON.stringify(param));
   //チャット欄にメッセージ追加
-  $("#message_box").append("<div class='send_message'><?php echo $myself ?>:"+param["message"]+"</div>");
 }
 </script>
 <body>

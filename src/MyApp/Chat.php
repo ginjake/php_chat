@@ -39,14 +39,34 @@ class Chat implements MessageComponentInterface {
         }
         
         if ($from_param["mode"] == "private") {
+          
+            $send_comp_flag = 0;
             foreach ($this->clients as $client) {
                 //対象を指定
                 $client_param = $this->parse_url_param($client->httpRequest->getRequestTarget());
                 if ($from_param["target"] === $client_param["myself"]) {
                     if ($from_param["myself"] === $client_param["target"]) {
                         $client->send($msg);
+                        $send_comp_flag = 1;
                     }
                 }
+            }
+            if ($send_comp_flag) {
+                foreach ($this->clients as $client) {
+                    //自分に送信
+                    $client_param = $this->parse_url_param($client->httpRequest->getRequestTarget());
+                    if ($from_param["target"] === $client_param["target"]) {
+                        if ($from_param["myself"] === $client_param["myself"]) {
+                            $client->send($msg);
+                        }
+                    }
+                }
+            }
+            if ($send_comp_flag == 0) {
+                $error["type"] = 'error';
+                $error["code"] = '1';
+                $error["detail"] = '相手がエラーのため送信に失敗しました';
+                $from->send(json_encode($error));
             }
         }
     }
