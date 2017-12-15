@@ -53,7 +53,8 @@ conn.onmessage = function(e) {
             }
         }
     } else {
-        append_message = "<div class='receive_message'>"+<?php $send_param["target"]?> + ":" + receive_data["message"] + "<div>"
+        //チャット欄にメッセージ追加
+        append_message = "<div class='receive_message'> <?php echo $target ?>:" + receive_data["message"] + "<div>"
         $("#message_box").append(append_message);
     }
 };
@@ -65,7 +66,8 @@ function send() {
   param["name"] = $('#name').val();
   param["message"] = $('#message').val();
   conn.send(JSON.stringify(param));
-  $("#message_box").append("<div class='send_message'>"+param["message"]+"</div>");
+  //チャット欄にメッセージ追加
+  $("#message_box").append("<div class='send_message'><?php echo $myself ?>:"+param["message"]+"</div>");
 }
 </script>
 <body>
